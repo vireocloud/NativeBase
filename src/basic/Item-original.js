@@ -11,7 +11,6 @@ import { Input } from "./Input";
 import { Label } from "./Label";
 import { Icon } from "./Icon";
 import { Thumbnail } from "./Thumbnail";
-import { DatePicker } from "./DatePicker";
 
 import { connectStyle } from "native-base-shoutem-theme";
 import variables from "../theme/variables/platform";
@@ -24,14 +23,13 @@ class Item extends Component {
     super(props);
     this.state = {
       text: "",
-      date:"",
       topAnim: new Animated.Value(18),
       opacAnim: new Animated.Value(1)
     };
   }
   componentDidMount() {
     if (this.props.floatingLabel) {
-      if ((this.inputProps && this.inputProps.value) || this.datePickerProps) {
+      if (this.inputProps && this.inputProps.value) {
         this.setState({ isFocused: true });
         this.floatUp(-16);
       }
@@ -136,19 +134,6 @@ class Item extends Component {
       }
     });
 
-    let datePicker = [];
-    let datePickerProps = {};
-
-    if (input.length === 0) {
-      datePicker = _.remove(childrenArray, item => {
-        if (item.type === DatePicker) {
-          datePickerProps = item.props;
-          this.datePickerProps = item.props;
-          return item;
-        }
-      });
-    }
-
     let icon = [];
     let iconProps = {};
     icon = _.remove(childrenArray, item => {
@@ -166,7 +151,6 @@ class Item extends Component {
         return item;
       }
     });
-
     if (this.props.floatingLabel && icon.length) {
       let isIcon = false;
       for (let i = 0; i < this.props.children.length; i++) {
@@ -202,9 +186,7 @@ class Item extends Component {
               </Label>
             </Animated.View>
           );
-
           newChildren.push(
-            input.length > 0 ?
             <Input
               ref={c => (this._inputRef = c)}
               key="l2"
@@ -226,17 +208,7 @@ class Item extends Component {
                 this.setState({ text });
                 inputProps.onChangeText && inputProps.onChangeText(text);
               }}
-            /> :
-            <DatePicker
-              ref={c => (this._datePickerRef = c)}
-              key="l2"
-              {...datePickerProps}
-              textStyle={{paddingTop:10, paddingLeft: 0, marginLeft: 0}}
-              placeHolderTextStyle={{paddingTop:10, paddingLeft: 0, marginLeft: 0}}
-              onDateChange={date => {
-                this.setState({ date });
-                datePickerProps.onDateChange && datePickerProps.onDateChange(date);
-              }} />
+            />
           );
         }
       }
@@ -286,7 +258,6 @@ class Item extends Component {
             </Animated.View>
           );
           newChildren.push(
-            input.length > 0 ?
             <Input
               ref={c => (this._inputRef = c)}
               key="l2"
@@ -318,99 +289,51 @@ class Item extends Component {
                       : 0,
                 marginRight: 12
               }}
-            /> :
-            <DatePicker
-              ref={c => (this._datePickerRef = c)}
-              key="l2"
-              {...datePickerProps}
-              onDateChange={date => {
-                this.setState({ date });
-                datePickerProps.onDateChange && datePickerProps.onDateChange(date);
-              }}
-              style={{
-                left: this.props.last && isImage
-                  ? 10
-                  : this.props.last
-                    ? 4
-                    : isImage
-                      ? 10
-                      : 0,
-                marginRight: 12
-              }}
-              />
+            />
           );
         }
       }
     } else if (this.props.floatingLabel) {
-
-        newChildren.push(
-          <Animated.View
-            key="float"
-            style={{
-              position: "absolute",
-              left: this.props.last ? 15 : 0,
-              right: 0,
-              top: this.state.topAnim,
-              opacity: this.state.opacAnim,
-              paddingTop: Platform.OS === "ios" ? undefined : undefined,
-              paddingBottom: Platform.OS === "ios" ? undefined : 12
-            }}
-          >
-            <Label  {...labelProps} onPress={(e)=>{
-
-              if(datePicker.length > 0){
-                this.setState({isFocused: true});
-              }
-
-              if(labelProps.onPress && typeof labelProps.onPress === "function"){
-                labelProps.onPress(e)
-              }
-            }}>{this.renderLabel(label, labelProps)}</Label>
-          </Animated.View>
-        );
-
-      if(input.length > 0) {
-
-        newChildren.push(
-          <Input
-            ref={c => (this._inputRef = c)}
-            value={this.state.text}
-            key="l2"
-            {...inputProps}
-            onFocus={() => {
-              this.setState({ isFocused: true });
-              inputProps.onFocus && inputProps.onFocus();
-            }}
-            onBlur={() => {
-              inputProps.value
-                ? this.setState({
-                  isFocused: true
-                })
-                : !this.state.text.length && this.setState({ isFocused: false });
-              inputProps.onBlur && inputProps.onBlur();
-            }}
-            onChangeText={text => {
-              this.setState({ text });
-              inputProps.onChangeText && inputProps.onChangeText(text);
-            }}
-          /> );
-      }
-      else if (datePicker.length > 0) {
-        newChildren.push(
-            <DatePicker
-              key="l2"
-              defaultDate={this.state.date}
-              {...datePickerProps}
-              textStyle={{padding: 0, paddingRight: 10, paddingTop: 10, paddingBottom: 10, marginTop: 10, marginLeft: 0}}
-              placeHolderTextStyle={{padding: 0, paddingRight: 10, paddingTop: 10, paddingBottom: 10, marginTop: 10, marginLeft: 0}}
-              onDateChange={date => {
-                this.setState({ date });
-                datePickerProps.onDateChange && datePickerProps.onDateChange(date);
-              }}
-            />
-        );
-      }
-
+      newChildren.push(
+        <Animated.View
+          key="float"
+          style={{
+            position: "absolute",
+            left: this.props.last ? 15 : 0,
+            right: 0,
+            top: this.state.topAnim,
+            opacity: this.state.opacAnim,
+            paddingTop: Platform.OS === "ios" ? undefined : undefined,
+            paddingBottom: Platform.OS === "ios" ? undefined : 12
+          }}
+        >
+          <Label {...labelProps}>{this.renderLabel(label, labelProps)}</Label>
+        </Animated.View>
+      );
+      newChildren.push(
+        <Input
+          ref={c => (this._inputRef = c)}
+          value={this.state.text}
+          key="l2"
+          {...inputProps}
+          onFocus={() => {
+            this.setState({ isFocused: true });
+            inputProps.onFocus && inputProps.onFocus();
+          }}
+          onBlur={() => {
+            inputProps.value
+              ? this.setState({
+                isFocused: true
+              })
+              : !this.state.text.length && this.setState({ isFocused: false });
+            inputProps.onBlur && inputProps.onBlur();
+          }}
+          onChangeText={text => {
+            this.setState({ text });
+            inputProps.onChangeText && inputProps.onChangeText(text);
+          }}
+        />
+      );
     } else if (this.props.stackedLabel && icon.length) {
       newChildren.push(
         <View
@@ -424,19 +347,11 @@ class Item extends Component {
           <Icon key="s1" {...iconProps} />
           <View style={{ flexDirection: "column" }}>
             <Label key="s2" {...labelProps} />
-              input.length > 0 ?
             <Input
               key="s3"
               {...inputProps}
               style={{ width: variables.deviceWidth - 40 }}
             />
-            : datePicker.length > 0 ?
-            <DatePicker
-              key="s3"
-              {...datePickerProps}
-              style={{ width: variables.deviceWidth - 40 }}
-
-              /> : null
           </View>
         </View>
       );
