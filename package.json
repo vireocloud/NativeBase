@@ -13,12 +13,23 @@
     "packager",
     "rnpm"
   ],
+  "watch":{
+    "transpile":{
+      "patterns":["src"],
+      "extensions": "js,jsx",
+      "quiet": false,
+      "legacyWatch": true,
+      "runOnChangeOnly":true,
+      "delay": 0
+    }
+  },
   "scripts": {
     "compile": "rm -rf dist/* && babel . --out-dir dist --ignore node_modules,dist --source-maps ",
     "transpile": "npm run compile && cp src/basic/Icon/NBIcons.json dist/src/basic/Icon",
     "prepublish": "npm run transpile",
     "postinstall": "node addEjectScript.js",
-    "flow": "flow"
+    "flow": "flow",
+    "watch": "npm-watch"
   },
   "jest": {
     "preset": "react-native",
