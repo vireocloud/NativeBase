@@ -120,6 +120,10 @@ export default {
   datePickerTextColor: "#000",
   datePickerBg: "transparent",
 
+  //Time Picker
+  timePickerTextColor: "#000",
+  timePickerBg: "transparent",
+
   // Font
   DefaultFontSize: 16,
   fontFamily: platform === "ios" ? "System" : "Roboto",

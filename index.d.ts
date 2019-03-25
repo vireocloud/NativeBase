@@ -871,6 +871,23 @@ declare module "native-base" {
 			onDateChange?: (date: any) => void;
 			formatChosenDate?: (date: any) => void;
 		}
+
+		interface TimePicker {
+			style?:ReactNative.ViewStyle;
+			textStyle?: ReactNative.TextStyle;
+			placeholderStyle?: ReactNative.TextStyle;
+			placeholder?: string;
+			hour?: number;
+			minute?: number;
+			is24Hour?: boolean;
+			minuteInterval?: number;
+			timeZoneOffsetInMinutes?: number;
+			mode?: "clock" | "spinner" | "default";
+			onTimeChange?: (date: any) => void;
+			animationType?: "slide" | "fade" | "none";
+			modalTransparent?: boolean;
+		}
+
 	}
 
 	// Export definitions
@@ -1166,4 +1183,6 @@ declare module "native-base" {
 	export class Accordion extends React.Component<NativeBase.Accordion, any>{ }
 
 	export class DatePicker extends React.Component<NativeBase.DatePicker, any> { }
+	
+	export class TimePicker extends React.Component<NativeBase.TimePicker, any> { }
 }
